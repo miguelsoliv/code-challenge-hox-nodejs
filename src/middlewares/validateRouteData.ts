@@ -7,28 +7,26 @@ interface IRequest {
   query?: Yup.ObjectSchema;
 }
 
+const applyValidation = async (
+  data: Record<string, unknown>,
+  schema?: Yup.ObjectSchema
+) => {
+  const schemaNonNullable = schema || Yup.object().shape({});
+
+  await schemaNonNullable.noUnknown(true).validate(data, {
+    abortEarly: false,
+    strict: true,
+  });
+};
+
 const validate = ({ body, params, query }: IRequest): RequestHandler => async (
   request,
   _,
   next
 ) => {
-  if (body) {
-    await body.validate(request.body, {
-      abortEarly: false,
-    });
-  }
-
-  if (params) {
-    await params.validate(request.params, {
-      abortEarly: false,
-    });
-  }
-
-  if (query) {
-    await query.validate(request.query, {
-      abortEarly: false,
-    });
-  }
+  await applyValidation(request.body, body);
+  await applyValidation(request.params, params);
+  await applyValidation(request.query, query);
 
   next();
 };
