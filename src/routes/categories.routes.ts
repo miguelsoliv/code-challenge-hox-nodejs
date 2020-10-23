@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as Yup from 'yup';
 
-import CategoriesController from '../controllers/CategoriesController';
+import { categoriesController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
 
 const categoriesRoutes = Router();
@@ -13,7 +13,7 @@ categoriesRoutes.post(
       name: Yup.string().required(),
     }),
   }),
-  CategoriesController.store
+  categoriesController.store
 );
 
 categoriesRoutes.put(
@@ -26,7 +26,7 @@ categoriesRoutes.put(
       id: Yup.string().uuid().required(),
     }),
   }),
-  CategoriesController.update
+  categoriesController.update
 );
 
 categoriesRoutes.delete(
@@ -36,7 +36,7 @@ categoriesRoutes.delete(
       id: Yup.string().uuid().required(),
     }),
   }),
-  CategoriesController.remove
+  categoriesController.remove
 );
 
 categoriesRoutes.get(
@@ -46,9 +46,9 @@ categoriesRoutes.get(
       id: Yup.string().uuid().required(),
     }),
   }),
-  CategoriesController.show
+  categoriesController.show
 );
 
-categoriesRoutes.get('/', validateRouteData({}), CategoriesController.index);
+categoriesRoutes.get('/', validateRouteData({}), categoriesController.index);
 
 export default categoriesRoutes;

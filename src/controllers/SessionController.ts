@@ -1,27 +1,23 @@
 import { Response, RequestHandler } from 'express';
-import { getRepository } from 'typeorm';
 
-import AppError from '../errors/AppError';
-import { generateToken, compareHashs } from '../helpers/passwords';
-import User from '../models/User';
+import { IUsersRepository } from '../repositories/users';
+import { AuthenticateUserService } from '../services/users';
 
-const login: RequestHandler = async (request, response): Promise<Response> => {
-  const { email, password } = request.body;
+class SessionController {
+  constructor(private usersRepo: IUsersRepository) {}
 
-  const usersRepo = getRepository(User);
+  login: RequestHandler = async (request, response): Promise<Response> => {
+    const { email, password } = request.body;
 
-  const user = await usersRepo.findOne({
-    email,
-  });
+    const authenticateUserService = new AuthenticateUserService(this.usersRepo);
 
-  if (!user || !(await compareHashs(password, user.password))) {
-    throw new AppError('Incorrect email/password combination', 401);
-  }
+    const authenticateData = await authenticateUserService.execute({
+      email,
+      password,
+    });
 
-  return response.status(200).json({
-    user,
-    token: generateToken(user.id),
-  });
-};
+    return response.status(200).json(authenticateData);
+  };
+}
 
-export default { login };
+export default SessionController;

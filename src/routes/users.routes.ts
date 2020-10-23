@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as Yup from 'yup';
 
-import UsersController from '../controllers/UsersController';
+import { usersController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
 
 const usersRoutes = Router();
@@ -15,7 +15,7 @@ usersRoutes.post(
       password: Yup.string().min(6).required(),
     }),
   }),
-  UsersController.store
+  usersController.store
 );
 
 export default usersRoutes;

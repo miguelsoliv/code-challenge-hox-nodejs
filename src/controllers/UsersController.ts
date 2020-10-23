@@ -1,26 +1,24 @@
 import { Response, RequestHandler } from 'express';
-import { getRepository } from 'typeorm';
 
-import { generateHash, generateToken } from '../helpers/passwords';
-import User from '../models/User';
+import { IUsersRepository } from '../repositories/users';
+import { CreateUserService } from '../services/users';
 
-const store: RequestHandler = async (request, response): Promise<Response> => {
-  const { name, email, password } = request.body;
+class UsersController {
+  constructor(private usersRepo: IUsersRepository) {}
 
-  const usersRepo = getRepository(User);
+  store: RequestHandler = async (request, response): Promise<Response> => {
+    const { name, email, password } = request.body;
 
-  const user = usersRepo.create({
-    name,
-    email,
-    password: await generateHash(password),
-  });
+    const createUserService = new CreateUserService(this.usersRepo);
 
-  await usersRepo.save(user);
+    const userData = await createUserService.execute({
+      name,
+      email,
+      password,
+    });
 
-  return response.status(200).json({
-    ...user,
-    token: generateToken(user.id),
-  });
-};
+    return response.status(200).json(userData);
+  };
+}
 
-export default { store };
+export default UsersController;

@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 
 import AppError from '../errors/AppError';
-import { verifyToken } from '../helpers/passwords';
+import { jwtHelper } from '../helpers';
 
 interface ITokenPayload {
   sub: string;
@@ -14,7 +14,7 @@ const ensureUserAuthenticated: RequestHandler = (request, _, next): void => {
 
   try {
     const [, token] = authHeader.split(' ');
-    const validToken = verifyToken(token);
+    const validToken = jwtHelper.verifyToken(token);
 
     const { sub } = validToken as ITokenPayload;
 

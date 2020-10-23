@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as Yup from 'yup';
 
-import SessionController from '../controllers/SessionController';
+import { sessionController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
 
 const sessionRoutes = Router();
@@ -14,7 +14,7 @@ sessionRoutes.post(
       password: Yup.string().min(6).required(),
     }),
   }),
-  SessionController.login
+  sessionController.login
 );
 
 export default sessionRoutes;

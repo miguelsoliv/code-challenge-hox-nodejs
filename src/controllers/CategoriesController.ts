@@ -1,62 +1,76 @@
 import { Response, RequestHandler } from 'express';
-import { getRepository } from 'typeorm';
 
-import Category from '../models/Category';
+import { ICategoriesRepository } from '../repositories/categories';
+import {
+  CreateCategoryService,
+  UpdateCategoryService,
+  DeleteCategoryService,
+  ShowCategoryService,
+  ListCategoryService,
+} from '../services/categories';
 
-const store: RequestHandler = async (request, response): Promise<Response> => {
-  const { name } = request.body;
+class CategoriesRepository {
+  constructor(private categoriesRepo: ICategoriesRepository) {}
 
-  const categoriesRepo = getRepository(Category);
+  store: RequestHandler = async (request, response): Promise<Response> => {
+    const { name } = request.body;
 
-  const category = categoriesRepo.create({
-    name,
-  });
+    const createCategoryService = new CreateCategoryService(
+      this.categoriesRepo
+    );
 
-  await categoriesRepo.save(category);
+    const categoryData = await createCategoryService.execute({
+      name,
+    });
 
-  return response.status(200).json(category);
-};
+    return response.status(200).json(categoryData);
+  };
 
-const update: RequestHandler = async (request, response): Promise<Response> => {
-  const { id } = request.params;
-  const { name } = request.body;
+  update: RequestHandler = async (request, response): Promise<Response> => {
+    const { id } = request.params;
+    const { name } = request.body;
 
-  const categoriesRepo = getRepository(Category);
+    const updateCategoryService = new UpdateCategoryService(
+      this.categoriesRepo
+    );
 
-  const category = await categoriesRepo.save({
-    id,
-    name,
-  });
+    const categoryData = await updateCategoryService.execute({
+      id,
+      name,
+    });
 
-  return response.status(200).json(category);
-};
+    return response.status(200).json(categoryData);
+  };
 
-const remove: RequestHandler = async (request, response): Promise<Response> => {
-  const { id } = request.params;
+  remove: RequestHandler = async (request, response): Promise<Response> => {
+    const { id } = request.params;
 
-  const categoriesRepo = getRepository(Category);
+    const deleteCategoryService = new DeleteCategoryService(
+      this.categoriesRepo
+    );
 
-  await categoriesRepo.delete(id);
+    await deleteCategoryService.execute(id);
 
-  return response.status(204).send();
-};
+    return response.status(204).send();
+  };
 
-const show: RequestHandler = async (request, response): Promise<Response> => {
-  const { id } = request.params;
+  show: RequestHandler = async (request, response): Promise<Response> => {
+    const { id } = request.params;
 
-  const categoriesRepo = getRepository(Category);
+    const showCategoryService = new ShowCategoryService(this.categoriesRepo);
 
-  const category = await categoriesRepo.findOneOrFail(id);
+    const categoryData = await showCategoryService.execute(id);
 
-  return response.status(200).json(category);
-};
+    return response.status(200).json(categoryData);
+  };
 
-const index: RequestHandler = async (_, response): Promise<Response> => {
-  const categoriesRepo = getRepository(Category);
+  index: RequestHandler = async (_, response): Promise<Response> => {
+    const listCategoryService = new ListCategoryService(this.categoriesRepo);
 
-  const category = await categoriesRepo.find();
+    const categoriesData = await listCategoryService.execute();
 
-  return response.status(200).json(category);
-};
+    return response.status(200).json(categoriesData);
+  };
+}
 
-export default { store, update, remove, show, index };
+export default CategoriesRepository;
