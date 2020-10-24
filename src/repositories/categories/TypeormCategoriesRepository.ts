@@ -1,4 +1,5 @@
 import { getRepository } from 'typeorm';
+import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 
 import { ICreateCategoryDTO, IUpdateCategoryDTO } from '../../dtos/categoryDTO';
 import Category from '../../models/Category';
@@ -13,8 +14,20 @@ class TypeormCategoriesRepository implements ICategoriesRepository {
     return categoriesRepo.save(category);
   }
 
-  async update(data: IUpdateCategoryDTO): Promise<Category> {
-    return getRepository(Category).save(data);
+  async updateOrFail(data: IUpdateCategoryDTO): Promise<Category> {
+    const updateResult = await getRepository(Category)
+      .createQueryBuilder()
+      .update()
+      .set(data)
+      .where('id = :id', {
+        id: data.id,
+      })
+      .returning('*')
+      .execute();
+
+    if (!updateResult.raw[0]) throw new EntityNotFoundError(Category, '');
+
+    return updateResult.raw[0];
   }
 
   async delete(id: string): Promise<void> {

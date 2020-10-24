@@ -14,9 +14,7 @@ class UpdateCategoryService {
   constructor(private categoriesRepo: ICategoriesRepository) {}
 
   execute = async ({ id, name }: IRequest): Promise<IResponse> => {
-    await this.categoriesRepo.findByIdOrFail(id);
-
-    const category = await this.categoriesRepo.update({
+    const category = await this.categoriesRepo.updateOrFail({
       id,
       name,
     });

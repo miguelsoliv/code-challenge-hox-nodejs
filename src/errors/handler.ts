@@ -1,5 +1,6 @@
 import { ErrorRequestHandler } from 'express';
 import { QueryFailedError } from 'typeorm';
+import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { ValidationError } from 'yup';
 
 import { NODE_ENV, SHOW_DATABASE_ERRORS } from '../config/env';
@@ -27,7 +28,7 @@ const errorHandler: ErrorRequestHandler = (err, request, response, _) => {
     });
   }
 
-  if (err.name === 'EntityNotFound') {
+  if (err instanceof EntityNotFoundError) {
     return response.status(404).json({
       status: 'error',
       message: 'The requested resource could not be found',
