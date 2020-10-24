@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as Yup from 'yup';
+import Joi from 'joi';
 
 import { productsController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
@@ -9,13 +9,13 @@ const productsRoutes = Router();
 productsRoutes.post(
   '/',
   validateRouteData({
-    body: Yup.object().shape({
-      name: Yup.string().required(),
-      category_id: Yup.string().uuid().required(),
-      expiration_date: Yup.string().required(),
-      manufacturing_date: Yup.string().required(),
-      perishable_product: Yup.boolean().required(),
-      price: Yup.number().required(),
+    body: Joi.object({
+      name: Joi.string().required(),
+      category_id: Joi.string().uuid().required(),
+      expiration_date: Joi.date().required(),
+      manufacturing_date: Joi.date().required(),
+      perishable_product: Joi.boolean().required(),
+      price: Joi.number().required(),
     }),
   }),
   productsController.store
@@ -24,16 +24,16 @@ productsRoutes.post(
 productsRoutes.put(
   '/:id',
   validateRouteData({
-    body: Yup.object().shape({
-      name: Yup.string().required(),
-      category_id: Yup.string().uuid().required(),
-      expiration_date: Yup.date().required(),
-      manufacturing_date: Yup.date().required(),
-      perishable_product: Yup.boolean().required(),
-      price: Yup.number().required(),
+    body: Joi.object({
+      name: Joi.string().required(),
+      category_id: Joi.string().uuid().required(),
+      expiration_date: Joi.date().required(),
+      manufacturing_date: Joi.date().required(),
+      perishable_product: Joi.boolean().required(),
+      price: Joi.number().required(),
     }),
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   productsController.update
@@ -42,8 +42,8 @@ productsRoutes.put(
 productsRoutes.delete(
   '/:id',
   validateRouteData({
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   productsController.remove
@@ -52,8 +52,8 @@ productsRoutes.delete(
 productsRoutes.get(
   '/:id',
   validateRouteData({
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   productsController.show

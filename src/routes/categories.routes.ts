@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as Yup from 'yup';
+import Joi from 'joi';
 
 import { categoriesController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
@@ -9,8 +9,8 @@ const categoriesRoutes = Router();
 categoriesRoutes.post(
   '/',
   validateRouteData({
-    body: Yup.object().shape({
-      name: Yup.string().required(),
+    body: Joi.object({
+      name: Joi.string().required(),
     }),
   }),
   categoriesController.store
@@ -19,11 +19,11 @@ categoriesRoutes.post(
 categoriesRoutes.put(
   '/:id',
   validateRouteData({
-    body: Yup.object().shape({
-      name: Yup.string().required(),
+    body: Joi.object({
+      name: Joi.string().required(),
     }),
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   categoriesController.update
@@ -32,8 +32,8 @@ categoriesRoutes.put(
 categoriesRoutes.delete(
   '/:id',
   validateRouteData({
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   categoriesController.remove
@@ -42,8 +42,8 @@ categoriesRoutes.delete(
 categoriesRoutes.get(
   '/:id',
   validateRouteData({
-    params: Yup.object().shape({
-      id: Yup.string().uuid().required(),
+    params: Joi.object({
+      id: Joi.string().uuid().required(),
     }),
   }),
   categoriesController.show

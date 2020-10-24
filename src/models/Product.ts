@@ -11,7 +11,7 @@ class Product extends BaseModel {
   @Column()
   category_id: string;
 
-  @ManyToOne(() => Category, category => category.products, {
+  @ManyToOne(() => Category, {
     eager: true,
   })
   @JoinColumn({ name: 'category_id' })

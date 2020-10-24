@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from 'express';
+import { ValidationError } from 'joi';
 import { QueryFailedError } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
-import { ValidationError } from 'yup';
 
 import { NODE_ENV, SHOW_DATABASE_ERRORS } from '../config/env';
 import AppError from './AppError';
@@ -10,7 +10,7 @@ const errorHandler: ErrorRequestHandler = (err, request, response, _) => {
   if (err instanceof ValidationError) {
     return response.status(400).json({
       status: 'error',
-      message: err.errors,
+      message: err.details,
     });
   }
 

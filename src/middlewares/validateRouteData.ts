@@ -1,22 +1,29 @@
 import { RequestHandler } from 'express';
-import * as Yup from 'yup';
+import Joi, { Schema, ValidationError } from 'joi';
 
 interface IRequest {
-  body?: Yup.ObjectSchema;
-  params?: Yup.ObjectSchema;
-  query?: Yup.ObjectSchema;
+  body?: Schema;
+  params?: Schema;
+  query?: Schema;
 }
 
 const applyValidation = async (
   data: Record<string, unknown>,
-  schema?: Yup.ObjectSchema
+  schema?: Schema
 ) => {
-  const schemaNonNullable = schema || Yup.object().shape({});
+  const nonNullableSchema = schema || Joi.object({});
 
-  await schemaNonNullable.noUnknown(true).validate(data, {
+  const validationResult = nonNullableSchema.validate(data, {
     abortEarly: false,
-    strict: true,
   });
+
+  if (validationResult.error) {
+    throw new ValidationError(
+      validationResult.error.message,
+      validationResult.error.details.map(err => err.message),
+      data
+    );
+  }
 };
 
 const validate = ({ body, params, query }: IRequest): RequestHandler => async (

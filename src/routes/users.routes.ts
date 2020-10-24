@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as Yup from 'yup';
+import Joi from 'joi';
 
 import { usersController } from '../controllers';
 import validateRouteData from '../middlewares/validateRouteData';
@@ -9,10 +9,10 @@ const usersRoutes = Router();
 usersRoutes.post(
   '/',
   validateRouteData({
-    body: Yup.object().shape({
-      name: Yup.string().required(),
-      email: Yup.string().email().required(),
-      password: Yup.string().min(6).required(),
+    body: Joi.object({
+      name: Joi.string().required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().min(6).required(),
     }),
   }),
   usersController.store
