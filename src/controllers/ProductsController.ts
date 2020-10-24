@@ -8,6 +8,7 @@ import {
   ShowProductService,
   ListProductService,
 } from '../services/products';
+import productsView from '../views/products_view';
 
 class ProductsController {
   constructor(private productsRepo: IProductsRepository) {}
@@ -24,7 +25,7 @@ class ProductsController {
 
     const createProductService = new CreateProductService(this.productsRepo);
 
-    const productData = await createProductService.execute({
+    const { product } = await createProductService.execute({
       name,
       category_id,
       expiration_date,
@@ -33,7 +34,9 @@ class ProductsController {
       price,
     });
 
-    return response.status(200).json(productData);
+    return response.status(200).json({
+      product: productsView.render(product),
+    });
   };
 
   update: RequestHandler = async (request, response): Promise<Response> => {
@@ -49,7 +52,7 @@ class ProductsController {
 
     const updateProductService = new UpdateProductService(this.productsRepo);
 
-    const productData = await updateProductService.execute({
+    const { product } = await updateProductService.execute({
       id,
       name,
       category_id,
@@ -59,7 +62,9 @@ class ProductsController {
       price,
     });
 
-    return response.status(200).json(productData);
+    return response.status(200).json({
+      product: productsView.render(product),
+    });
   };
 
   remove: RequestHandler = async (request, response): Promise<Response> => {
@@ -77,17 +82,21 @@ class ProductsController {
 
     const showProductService = new ShowProductService(this.productsRepo);
 
-    const productData = await showProductService.execute(id);
+    const { product } = await showProductService.execute(id);
 
-    return response.status(200).json(productData);
+    return response.status(200).json({
+      product: productsView.render(product),
+    });
   };
 
   index: RequestHandler = async (_, response): Promise<Response> => {
     const listProductService = new ListProductService(this.productsRepo);
 
-    const productsData = await listProductService.execute();
+    const { products } = await listProductService.execute();
 
-    return response.status(200).json(productsData);
+    return response.status(200).json({
+      products: productsView.renderMany(products),
+    });
   };
 }
 

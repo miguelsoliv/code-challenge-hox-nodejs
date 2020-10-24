@@ -2,6 +2,7 @@ import { Response, RequestHandler } from 'express';
 
 import { IUsersRepository } from '../repositories/users';
 import { CreateUserService } from '../services/users';
+import usersView from '../views/users_view';
 
 class UsersController {
   constructor(private usersRepo: IUsersRepository) {}
@@ -11,13 +12,16 @@ class UsersController {
 
     const createUserService = new CreateUserService(this.usersRepo);
 
-    const userData = await createUserService.execute({
+    const { user, token } = await createUserService.execute({
       name,
       email,
       password,
     });
 
-    return response.status(200).json(userData);
+    return response.status(200).json({
+      user: usersView.render(user),
+      token,
+    });
   };
 }
 

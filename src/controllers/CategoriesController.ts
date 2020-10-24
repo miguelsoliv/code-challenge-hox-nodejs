@@ -8,6 +8,7 @@ import {
   ShowCategoryService,
   ListCategoryService,
 } from '../services/categories';
+import categoriesView from '../views/categories_view';
 
 class CategoriesRepository {
   constructor(private categoriesRepo: ICategoriesRepository) {}
@@ -19,11 +20,13 @@ class CategoriesRepository {
       this.categoriesRepo
     );
 
-    const categoryData = await createCategoryService.execute({
+    const { category } = await createCategoryService.execute({
       name,
     });
 
-    return response.status(200).json(categoryData);
+    return response.status(200).json({
+      category: categoriesView.render(category),
+    });
   };
 
   update: RequestHandler = async (request, response): Promise<Response> => {
@@ -34,12 +37,14 @@ class CategoriesRepository {
       this.categoriesRepo
     );
 
-    const categoryData = await updateCategoryService.execute({
+    const { category } = await updateCategoryService.execute({
       id,
       name,
     });
 
-    return response.status(200).json(categoryData);
+    return response.status(200).json({
+      category: categoriesView.render(category),
+    });
   };
 
   remove: RequestHandler = async (request, response): Promise<Response> => {
@@ -59,17 +64,21 @@ class CategoriesRepository {
 
     const showCategoryService = new ShowCategoryService(this.categoriesRepo);
 
-    const categoryData = await showCategoryService.execute(id);
+    const { category } = await showCategoryService.execute(id);
 
-    return response.status(200).json(categoryData);
+    return response.status(200).json({
+      category: categoriesView.render(category),
+    });
   };
 
   index: RequestHandler = async (_, response): Promise<Response> => {
     const listCategoryService = new ListCategoryService(this.categoriesRepo);
 
-    const categoriesData = await listCategoryService.execute();
+    const { categories } = await listCategoryService.execute();
 
-    return response.status(200).json(categoriesData);
+    return response.status(200).json({
+      categories: categoriesView.renderMany(categories),
+    });
   };
 }
 
