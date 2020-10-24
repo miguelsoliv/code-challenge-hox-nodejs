@@ -34,7 +34,7 @@ class ProductsController {
       price,
     });
 
-    return response.status(200).json({
+    return response.status(201).json({
       product: productsView.render(product),
     });
   };

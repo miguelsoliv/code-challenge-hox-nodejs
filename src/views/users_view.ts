@@ -1,6 +1,6 @@
 import User from '../models/User';
 
-interface IUserView {
+export interface IUserView {
   id: string;
   name: string;
   email: string;
