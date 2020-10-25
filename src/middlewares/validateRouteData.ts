@@ -15,6 +15,7 @@ const applyValidation = async (
 
   const validationResult = nonNullableSchema.validate(data, {
     abortEarly: false,
+    convert: false,
   });
 
   if (validationResult.error) {

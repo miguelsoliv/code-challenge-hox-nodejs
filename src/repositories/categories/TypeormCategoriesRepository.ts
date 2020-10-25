@@ -30,8 +30,17 @@ class TypeormCategoriesRepository implements ICategoriesRepository {
     return updateResult.raw[0];
   }
 
-  async delete(id: string): Promise<void> {
-    await getRepository(Category).delete(id);
+  async deleteOrFail(id: string): Promise<void> {
+    const deleteResult = await getRepository(Category)
+      .createQueryBuilder()
+      .delete()
+      .where('id = :id', {
+        id,
+      })
+      .returning('*')
+      .execute();
+
+    if (!deleteResult.raw[0]) throw new EntityNotFoundError(Category, '');
   }
 
   async findByIdOrFail(id: string): Promise<Category> {

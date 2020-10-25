@@ -1,9 +1,11 @@
+import http from 'http';
+
 import App from './app';
+import { NODE_ENV } from './config/env';
 
-const server = new App().express;
-
+const server = http.createServer(new App().express);
 server.listen(3333, async () => {
-  console.log('Started development server 🚀');
+  if (NODE_ENV !== 'test') console.log('Started development server 🚀');
 });
 
 export default server;

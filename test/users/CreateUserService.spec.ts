@@ -1,7 +1,6 @@
 import faker from 'faker';
 
 import { jwtHelper, passwordsHelper } from '../../src/helpers';
-import User from '../../src/models/User';
 import { FakeUsersRepository } from '../../src/repositories/users';
 import { CreateUserService } from '../../src/services/users';
 
@@ -25,30 +24,23 @@ describe('ENDPOINT /users', () => {
       password: faker.internet.password(),
     };
 
-    const createdUser = await createUserService.execute(userData);
+    const createdUserResponse = await createUserService.execute(userData);
 
-    const {
-      id,
-      name,
-      email,
-      password,
-      created_at,
-      updated_at,
-    } = createdUser.user;
+    const { name, email } = userData;
 
     expect(createUserSpy).toHaveBeenCalledTimes(1);
     expect(generateTokenSpy).toHaveBeenCalledTimes(1);
     expect(generateHashSpy).toHaveBeenCalledTimes(1);
-    expect(createdUser).toEqual<{ user: User; token: string }>({
+    expect(createdUserResponse).toEqual<typeof createdUserResponse>({
       user: {
-        id,
+        id: createdUserResponse.user.id,
         name,
         email,
-        password,
-        created_at,
-        updated_at,
+        password: createdUserResponse.user.password,
+        created_at: createdUserResponse.user.created_at,
+        updated_at: createdUserResponse.user.updated_at,
       },
-      token: createdUser.token,
+      token: createdUserResponse.token,
     });
   });
 });

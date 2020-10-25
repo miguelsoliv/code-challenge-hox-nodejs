@@ -8,8 +8,6 @@
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --no-notify src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli -f ./src/config/database.ts",
-    "migration:run": "ts-node-dev ./node_modules/typeorm/cli -f ./src/config/database.ts migration:run",
-    "migration-test:run": "cross-env NODE_ENV=test ts-node-dev ./node_modules/typeorm/cli -f ./src/config/database.ts migration:run",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --runInBand",
     "unit-test": "jest service --detectOpenHandles --runInBand",
     "integ-test": "cross-env NODE_ENV=test jest integration --detectOpenHandles --runInBand"

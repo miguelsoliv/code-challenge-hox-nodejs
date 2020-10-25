@@ -12,10 +12,10 @@ productsRoutes.post(
     body: Joi.object({
       name: Joi.string().required(),
       category_id: Joi.string().uuid().required(),
-      expiration_date: Joi.date().required(),
-      manufacturing_date: Joi.date().required(),
+      expiration_date: Joi.string().required(),
+      manufacturing_date: Joi.string().required(),
       perishable_product: Joi.boolean().required(),
-      price: Joi.number().required(),
+      price: Joi.number().precision(2).positive().required(),
     }),
   }),
   productsController.store
@@ -27,10 +27,10 @@ productsRoutes.put(
     body: Joi.object({
       name: Joi.string().required(),
       category_id: Joi.string().uuid().required(),
-      expiration_date: Joi.date().required(),
-      manufacturing_date: Joi.date().required(),
+      expiration_date: Joi.string().required(),
+      manufacturing_date: Joi.string().required(),
       perishable_product: Joi.boolean().required(),
-      price: Joi.number().required(),
+      price: Joi.number().precision(2).positive().required(),
     }),
     params: Joi.object({
       id: Joi.string().uuid().required(),

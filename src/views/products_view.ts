@@ -21,7 +21,7 @@ export default {
       manufacturing_date: product.manufacturing_date,
       perishable_product: product.perishable_product,
       expiration_date: product.expiration_date,
-      price: product.price,
+      price: Number(product.price),
       category: product.category && categoriesView.render(product.category),
     };
   },

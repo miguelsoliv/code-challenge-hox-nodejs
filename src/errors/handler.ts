@@ -35,7 +35,7 @@ const errorHandler: ErrorRequestHandler = (err, request, response, _) => {
     });
   }
 
-  if (NODE_ENV === 'dev') console.error(err);
+  if (NODE_ENV === 'dev' || NODE_ENV === 'test') console.error(err);
 
   return response.status(500).json({
     status: 'error',

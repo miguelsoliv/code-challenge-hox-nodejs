@@ -1,21 +1,22 @@
-import { Application } from 'express';
 import faker from 'faker';
 import supertest from 'supertest';
 import { Connection } from 'typeorm';
 
-import App from '../../src/app';
 import createConnection from '../../src/database';
+import server from '../../src/server';
 import { IUserView } from '../../src/views/users_view';
 
-let server: Application;
 let conn: Connection;
 
 beforeAll(async () => {
-  server = new App().express;
   conn = await createConnection('test');
+  await conn.synchronize(true);
 });
 
-afterAll(async () => conn.close());
+afterAll(async () => {
+  await conn.close();
+  server.close();
+});
 
 describe('ENDPOINT /users', () => {
   describe('Should be able to create a user', () => {

@@ -6,13 +6,14 @@ import { AuthenticateUserService } from '../../src/services/users';
 import { createRandomUser } from '../factories';
 
 let fakerUsersRepository: FakeUsersRepository;
-let user: User & { originalPassword: string };
 let authenticateUserService: AuthenticateUserService;
+let createdUser: User & { originalPassword: string };
 
 beforeAll(async () => {
   fakerUsersRepository = new FakeUsersRepository();
-  user = await createRandomUser(fakerUsersRepository);
   authenticateUserService = new AuthenticateUserService(fakerUsersRepository);
+
+  createdUser = await createRandomUser(fakerUsersRepository);
 });
 
 describe('ENDPOINT /session', () => {
@@ -21,27 +22,29 @@ describe('ENDPOINT /session', () => {
     const generateTokenSpy = jest.spyOn(jwtHelper, 'generateToken');
     const compareHashsSpy = jest.spyOn(passwordsHelper, 'compareHashs');
 
-    const { id, name, email, password, created_at, updated_at } = user;
+    const { id, name, email, password, created_at, updated_at } = createdUser;
 
-    const authenticatedUser = await authenticateUserService.execute({
-      email: user.email,
-      password: user.originalPassword,
+    const authenticatedUserResponse = await authenticateUserService.execute({
+      email: createdUser.email,
+      password: createdUser.originalPassword,
     });
 
     expect(findUserByEmailSpy).toHaveBeenCalledTimes(1);
     expect(generateTokenSpy).toHaveBeenCalledTimes(1);
     expect(compareHashsSpy).toHaveBeenCalledTimes(1);
-    expect(authenticatedUser).toEqual<{ user: User; token: string }>({
-      user: {
-        id,
-        name,
-        email,
-        password,
-        created_at,
-        updated_at,
-      },
-      token: authenticatedUser.token,
-    });
+    expect(authenticatedUserResponse).toEqual<typeof authenticatedUserResponse>(
+      {
+        user: {
+          id,
+          name,
+          email,
+          password,
+          created_at,
+          updated_at,
+        },
+        token: authenticatedUserResponse.token,
+      }
+    );
   });
 
   it('Should not be able to authenticate a user with non-existing email', async () => {
@@ -50,7 +53,7 @@ describe('ENDPOINT /session', () => {
     await authenticateUserService
       .execute({
         email: 'invalid@email.com',
-        password: user.originalPassword,
+        password: createdUser.originalPassword,
       })
       .catch(err => {
         expect(err).toBeInstanceOf(AppError);
@@ -67,7 +70,7 @@ describe('ENDPOINT /session', () => {
 
     await authenticateUserService
       .execute({
-        email: user.email,
+        email: createdUser.email,
         password: 'invalid-password',
       })
       .catch(err => {
