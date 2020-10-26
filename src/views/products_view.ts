@@ -1,13 +1,15 @@
+import { format } from 'date-fns';
+
 import Product from '../models/Product';
 import categoriesView, { ICategoryView } from './categories_view';
 
-interface IProductView {
+export interface IProductView {
   id: string;
   category_id?: string;
   name: string;
-  manufacturing_date: Date;
+  manufacturing_date: string;
+  expiration_date: string;
   perishable_product: boolean;
-  expiration_date: Date;
   price: number;
   category?: ICategoryView;
 }
@@ -18,9 +20,15 @@ export default {
       id: product.id,
       category_id: product.category ? undefined : product.category_id,
       name: product.name,
-      manufacturing_date: product.manufacturing_date,
+      manufacturing_date: format(
+        product.manufacturing_date,
+        'yyyy-MM-dd HH:mm:ss SS'
+      ),
+      expiration_date: format(
+        product.expiration_date,
+        'yyyy-MM-dd HH:mm:ss SS'
+      ),
       perishable_product: product.perishable_product,
-      expiration_date: product.expiration_date,
       price: Number(product.price),
       category: product.category && categoriesView.render(product.category),
     };
