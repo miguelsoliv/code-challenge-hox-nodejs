@@ -516,7 +516,7 @@ O projeto foi organizado com base no MVC e com princípios do SOLID adaptados
       </tr>
       <tr>
         <td>Sample Request</td>
-        <td><code>/products</code></td>
+        <td><code>/products/1/My Category</code></td>
       </tr>
       <tr>
         <td>Notes</td>
