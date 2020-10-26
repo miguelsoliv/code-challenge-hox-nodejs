@@ -1,7 +1,11 @@
 import faker from 'faker';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 
-import { ICreateProductDTO, IUpdateProductDTO } from '../../dtos/productDTO';
+import {
+  ICreateProductDTO,
+  IUpdateProductDTO,
+  IListAllProductsDTO,
+} from '../../dtos/productDTO';
 import Product from '../../models/Product';
 import IProductsRepository from './IProductsRepository';
 
@@ -54,8 +58,21 @@ class FakeProductsRepository implements IProductsRepository {
     return findProduct;
   }
 
-  async findAll(): Promise<Product[]> {
-    return this.products;
+  async findAll({
+    page,
+    categoryName,
+    orderBy,
+  }: IListAllProductsDTO): Promise<Product[]> {
+    const startIndex = page * 10 - 10;
+    const endIndex = page * 10;
+
+    return this.products.filter((product, index) => {
+      if (startIndex > index || index >= endIndex) return null;
+
+      if (categoryName === 'all') return product;
+
+      return product.category?.name === categoryName;
+    });
   }
 }
 

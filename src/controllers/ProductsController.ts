@@ -1,5 +1,6 @@
 import { Response, RequestHandler } from 'express';
 
+import { allowedPropertiesFilter } from '../dtos/productDTO';
 import { IProductsRepository } from '../repositories/products';
 import {
   CreateProductService,
@@ -89,10 +90,16 @@ class ProductsController {
     });
   };
 
-  index: RequestHandler = async (_, response): Promise<Response> => {
+  index: RequestHandler = async (request, response): Promise<Response> => {
+    const { category, page, orderBy } = request.params;
+
     const listProductService = new ListProductService(this.productsRepo);
 
-    const { products } = await listProductService.execute();
+    const { products } = await listProductService.execute({
+      categoryName: category,
+      page: Number(page),
+      orderBy: orderBy as allowedPropertiesFilter,
+    });
 
     return response.status(200).json({
       products: productsView.renderMany(products),

@@ -15,7 +15,7 @@
 
 ## Documentação via Insomnia
 
-Baixe o arquivo `Insomnia_2020-10-25.json` para realizar a importação ou importe diretamente via URL `https://github.com/miguelsoliv/code-challenge-hox-nodejs/blob/master/Insomnia_2020-10-25.json`
+Baixe o arquivo `Insomnia_2020-10-26.json` para realizar a importação ou importe diretamente via URL `https://github.com/miguelsoliv/code-challenge-hox-nodejs/blob/master/Insomnia_2020-10-26.json`
 
 ## Estrutura do projeto
 O projeto foi organizado com base no MVC e com princípios do SOLID adaptados
@@ -485,7 +485,7 @@ O projeto foi organizado com base no MVC e com princípios do SOLID adaptados
 </details>
 
 <details>
-  <summary>[GET] /products</summary>
+  <summary>[GET] /products/:page/:category/:orderBy?</summary>
   <table style="margin-left: auto;margin-right: auto;">
     <thead>
       <tr>
@@ -496,7 +496,7 @@ O projeto foi organizado com base no MVC e com princípios do SOLID adaptados
     <tbody>
       <tr>
         <td>URL</td>
-        <td><code>/products</code></td>
+        <td><code>/products/:page/:category/:orderBy?</code></td>
       </tr>
       <tr>
         <td>Method</td>
@@ -504,7 +504,7 @@ O projeto foi organizado com base no MVC e com princípios do SOLID adaptados
       </tr>
       <tr>
         <td>URL Params</td>
-        <td>None</td>
+        <td><strong>Required:</strong> <br> <code>page=[number]</code><br> <code>category=[string]</code><br><strong>Optional:</strong> <br> <code>orderBy=[string]</code></td>
       </tr>
       <tr>
         <td>Data Params</td>

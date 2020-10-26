@@ -1,7 +1,11 @@
 import { getRepository } from 'typeorm';
 import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 
-import { ICreateProductDTO, IUpdateProductDTO } from '../../dtos/productDTO';
+import {
+  ICreateProductDTO,
+  IUpdateProductDTO,
+  IListAllProductsDTO,
+} from '../../dtos/productDTO';
 import Product from '../../models/Product';
 import IProductsRepository from './IProductsRepository';
 
@@ -47,8 +51,25 @@ class TypeormProductsRepository implements IProductsRepository {
     return getRepository(Product).findOneOrFail(id);
   }
 
-  async findAll(): Promise<Product[]> {
-    return getRepository(Product).find();
+  async findAll({
+    page,
+    categoryName,
+    orderBy,
+  }: IListAllProductsDTO): Promise<Product[]> {
+    const productsQueryBuilder = getRepository(Product)
+      .createQueryBuilder('prod')
+      .leftJoinAndSelect('prod.category', 'categ');
+
+    if (orderBy) productsQueryBuilder.orderBy(`prod.${orderBy}`, 'ASC');
+
+    if (categoryName !== 'all') {
+      productsQueryBuilder.where('categ.name = :name', { name: categoryName });
+    }
+
+    return productsQueryBuilder
+      .skip((page - 1) * 10)
+      .take(10)
+      .getMany();
   }
 }
 
