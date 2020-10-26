@@ -4,7 +4,7 @@ class DeleteProductService {
   constructor(private productsRepo: IProductsRepository) {}
 
   execute = async (id: string): Promise<void> => {
-    await this.productsRepo.delete(id);
+    await this.productsRepo.deleteOrFail(id);
   };
 }
 

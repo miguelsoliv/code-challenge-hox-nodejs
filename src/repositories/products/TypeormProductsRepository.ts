@@ -30,8 +30,17 @@ class TypeormProductsRepository implements IProductsRepository {
     return updateResult.raw[0];
   }
 
-  async delete(id: string): Promise<void> {
-    await getRepository(Product).delete(id);
+  async deleteOrFail(id: string): Promise<void> {
+    const deleteResult = await getRepository(Product)
+      .createQueryBuilder()
+      .delete()
+      .where('id = :id', {
+        id,
+      })
+      .returning('*')
+      .execute();
+
+    if (!deleteResult.raw[0]) throw new EntityNotFoundError(Product, '');
   }
 
   async findByIdOrFail(id: string): Promise<Product> {

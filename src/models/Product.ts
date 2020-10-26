@@ -15,7 +15,7 @@ class Product extends BaseModel {
     eager: true,
   })
   @JoinColumn({ name: 'category_id' })
-  category: Category;
+  category?: Category;
 
   @Column()
   manufacturing_date: Date;
