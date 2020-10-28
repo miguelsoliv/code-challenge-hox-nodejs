@@ -10,7 +10,7 @@ import {
 } from '../services/categories';
 import categoriesView from '../views/categories_view';
 
-class CategoriesRepository {
+class CategoriesController {
   constructor(private categoriesRepo: ICategoriesRepository) {}
 
   store: RequestHandler = async (request, response): Promise<Response> => {
@@ -82,4 +82,4 @@ class CategoriesRepository {
   };
 }
 
-export default CategoriesRepository;
+export default CategoriesController;
